@@ -1,5 +1,5 @@
 var mongoos = request('mongoose');
-module.exports = mongoose.model('User', {
+module.exports = mongoose.model('userInfo', {
     username: String,
     password: String,
     email: String,
