@@ -145,15 +145,19 @@ var createHash = function (password) {
     return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
 }
 
-/* GET login page. */
-app.get('/', function (req, res) {
+/* GET home page. */
+app.get('/', isLoggedIn, function (req, res) {
     // Display the Login page with any flash message, if any
     res.render('index');
 });
-
+/* GET login page. */
+app.get('/login',  function (req, res) {
+    // Display the Login page with any flash message, if any
+    res.render('login');
+});
 /* Handle Login POST */
 app.post('/login', passport.authenticate('login', {
-    successRedirect: '/home',
+    successRedirect: '/',
     failureRedirect: '/',
     failureFlash: true
 }));
@@ -171,10 +175,22 @@ app.post('/signup', passport.authenticate('signup', {
 }));
 /* Handle Logout */
 app.get('/signout', function(req, res) {
+  console.log('logout');
   req.logout();
-  res.redirect('/');
+  res.redirect('/login');
 });
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
     console.log('port' + port)
 });
+
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
+console.log('test');
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.redirect('/login');
+}
